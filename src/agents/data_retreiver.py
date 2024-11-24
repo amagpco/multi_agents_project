@@ -18,22 +18,9 @@ class DataRetreiverAgent:
     def retrieve_prompt_formatter(self, query: str) -> str:
         try:
             prompt = (
-                "You are an expert data retrieval assistant. Your role is to provide a long, detailed, "
-                "and contextually relevant response to the user's query."
-                "###DON'T include introductory phrases like 'Here is a ' or 'This is the information.' Instead, respond directly.\n\n"
-                "### User Query:\n"
-                f"{query}\n\n"
-                "### Instructions:\n"
-                "1. Begin with a brief introduction summarizing the query.\n"
-                "2. Provide a detailed response broken into clear sections.\n"
-                "   - Include examples, references, or relevant facts where appropriate.\n"
-                "   - Ensure the information is accurate and up-to-date.\n"
-                "3. Conclude actionable insights related to the query.\n\n"
-                "### Notes:\n"
-                "- Be concise but thorough.\n"
-                "- Avoid unnecessary repetition.\n\n"
-                "Now, respond to the user's query in detail."
-                "#DON'T ASK ANY QUESTION AT THE END OF RESPONSE"
+                f"You are an expert assistant providing detailed, accurate, and contextually relevant answers to the user's query: {query}."
+                "Respond directly without introductory phrases like 'Here is' and avoid asking questions at the end of the response."
+                "Provide a clear, structured response with examples, accurate facts, and actionable insights where appropriate."
             )
             return prompt
         except Exception as e:
