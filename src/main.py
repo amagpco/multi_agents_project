@@ -18,9 +18,11 @@ class WorkflowManager:
         self.chunk_ranker = ChunkRanker()
         self.steps = {
             'retreived_data': None,
+            'retreived_data_feedback': None,
             'chunks': None,
             'top_chunks': None,
             'summary': None,
+            'summary_feedback': None,
             'final_decision': None
         }
 
