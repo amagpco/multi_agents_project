@@ -6,11 +6,12 @@ import requests
 class LLMProvider:
     def __init__(self) -> None:
         self.ollama_endpoint = os.getenv('OLLAMA_ENDPOINT')
+        self.grokai_endpoint = os.getenv('GROKAI_ENDPOINT')
         self.llama_api_key = os.getenv('LLAMA_API_KEY')
         self.mistral_api_key = os.getenv('MISTRAL_API_KEY')
         self.cohere_api_key = os.getenv('COHERE_API_KEY')
         self.openai_api_key = os.getenv('OPENAI_API_KEY')
-        openai.api_key = self.openai_api_key
+        self.xai_api_key = os.getenv('XAI_API_KEY')
 
     def __call__(self, model_name: str):
         model_classes = {
@@ -34,6 +35,7 @@ class LLMModel:
         raise NotImplementedError("Subclasses must implement this method.")
     
 class LlamaModel(LLMModel):
+    
     def execute_prompt(self, prompt: str):
         payload = {"model": "llama3.2", "prompt": prompt}
         headers = {"Authorization": f"Bearer {self.provider.llama_api_key}"}
@@ -50,6 +52,7 @@ class LlamaModel(LLMModel):
             return None
         
 class MistralModel(LLMModel):
+
     def execute_prompt(self, prompt: str):
         payload = {"model": "mistral", "prompt": prompt}
         headers = {"Authorization": f"Bearer {self.provider.mistral_api_key}"}
@@ -66,6 +69,7 @@ class MistralModel(LLMModel):
             return None
         
 class CohereModel(LLMModel):
+
     def __init__(self, provider: LLMProvider) -> None:
         super().__init__(provider)
         self.client = cohere.Client()
@@ -79,16 +83,44 @@ class CohereModel(LLMModel):
             return None
         
 class GPTModel(LLMModel):
+
+    def __init__(self, provider: LLMProvider) -> None:
+        super().__init__(provider)
+        self.client = openai.OpenAI(
+            api_key=self.provider.openai_api_key
+        )
+
     def execute_prompt(self, prompt: str):
         try:
-            response = openai.ChatCompletion.create(
+            response = self.client.chat.completions.create(
                 model="gpt-4",
                 messages=[
-                    {"role": "system", "content": "You are a decision-making agent."},
                     {"role": "user", "content": prompt}
                 ]
             )
             return response.choices[0].message['content']
         except openai.error.OpenAIError as e:
             print(f"GPTModel Error: {e}")
+            return None
+
+class XAIModel(LLMModel):
+
+    def __init__(self, provider: LLMProvider) -> None:
+        super().__init__(provider)
+        self.client = openai.OpenAI(
+            api_key=self.provider.xai_api_key,
+            base_url=self.provider.grokai_endpoint
+        )
+
+    def execute_prompt(self, prompt: str):
+        try:
+            response = self.client.chat.completions.create(
+                model="grok-beta",
+                messages=[
+                    {"role": "user", "content": prompt}
+                ]
+            )
+            return response.choices[0].message['content']
+        except openai.error.OpenAIError as e:
+            print(f"XAI Model Error: {e}")
             return None
