@@ -1,4 +1,4 @@
-from llms.llm_provider import LLMProvider
+from models import LLMProvider
 
 class Agent:
     def __init__(self, model: str, name: str, role: str) -> None:

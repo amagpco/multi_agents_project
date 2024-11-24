@@ -1,7 +1,5 @@
 from dotenv import load_dotenv
-from agents.agents import Agent
-from agents.summarizer import SummarizerAgent
-from agents.decision_maker import DecisionMakerAgent
+from agent import Agent
 from utils.text_chunker import TextChunker
 from utils.embedding_ranker import ChunkRanker
 
@@ -13,17 +11,17 @@ class WorkflowManager:
         self.query = query
         self.data_retreiver = Agent(
             model="cohere",
-            name="Data Retreiver",
+            name="Data Retreiver Agent",
             role="You are an expert assistant providing detailed, accurate, and contextually relevant answers to the user's query.",
         )
         self.summarizer = Agent(
             model="cohere",
-            name="Summarizer",
+            name="Summarizer Agent",
             role="You are an expert summarization assistant. Generate a concise, structured summary of the provided data based on the user's query.",
         )
         self.decision_maker = Agent(
             model="cohere",
-            name="Decision Maker",
+            name="Decision Maker Agent",
             role="You are an intelligent decision-making assistant."
         )
 
